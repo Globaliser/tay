@@ -222,7 +222,7 @@ Element.prototype.forEach = function (myFunction: Function) {
  * @param selector Accepts multiple selector separated by , (comma)
  * @returns
  */
-function TAY(selector: string) {
+function tay(selector: string) {
   let elements = document.body.querySelectorAll(selector);
   if (elements.length === 1) return elements[0] as Element;
   return elements;
