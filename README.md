@@ -1,7 +1,7 @@
 # tay
 Super fast javascript library which includes most used jQuery methods written on Typescript
 
-**tay.js** file is the output created by TypeScript compiler for **strict mode** and **ES6** Standards. If you want to support all browsers, you can use tay.ts file and set your output to **ES5**.
+**tay.js** file is the output created by TypeScript compiler for **strict mode** and **ES6** Standards. If you want to support all browsers, you can use tay.ts file and set your output to **ES5** at your **tsconfig.json** file.
 
 # Examples
 
