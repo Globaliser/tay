@@ -11,7 +11,8 @@ $(".myclass").addClass("example");
 Tay version:
 TAY(".myclass").addClass("example");
 
-**You can also use on elements directly**
-element.parent().find(".switch").toggleClass("example");
+# Use on Elements directly
+
+myelement.parent().find(".switch").toggleClass("example");
 
 
