@@ -13,6 +13,6 @@ TAY(".myclass").addClass("example");
 
 # Use on Elements directly
 
-myelement.parent().find(".switch").toggleClass("example");
+myElement.parent().find(".switch").toggleClass("example");
 
 
