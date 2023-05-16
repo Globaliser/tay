@@ -6,9 +6,11 @@ tay.js file is output created by TypeScript compiler for strict mode and ES6 Sta
 # Examples
 
 **jQuery code example**
+
 $(".myclass").addClass("example");
 
 **Tay version:**
+
 tay(".myclass").addClass("example");
 
 # Use on Elements directly
