@@ -144,7 +144,7 @@ NodeList.prototype.css = function (css = "", value) {
 Element.prototype.forEach = function (myFunction) {
     myFunction(this);
 };
-function TAY(selector) {
+function tay(selector) {
     let elements = document.body.querySelectorAll(selector);
     if (elements.length === 1)
         return elements[0];
