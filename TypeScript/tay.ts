@@ -6,7 +6,7 @@ interface Element {
   find(selector: string): Element | NodeList | HTMLElement | null;
   next(): any | null;
   prev(selector?: string): any | null;
-  val(setVal: string): any;
+  val(setVal?: string): any;
   html(setHtml?: string): Element | string;
   hide(byDisplayNone?: boolean): Element | any;
   show(byDisplayNone?: boolean): Element | any;
@@ -16,6 +16,7 @@ interface Element {
   removeAttr(attr: string): any;
   forEach(callback: Function): any;
   css(css: string, value?: string): HTMLElement | any;
+  on(action: string, callback: Function): any;
 }
 
 interface NodeList extends Element {}
@@ -61,12 +62,12 @@ Element.prototype.next = function () {
   return this.nextSibling;
 };
 
-Element.prototype.prev = function (selector = "") {
-  if (selector === "") return this.previousSibling;
+Element.prototype.prev = function (selector?) {
+  if (selector === undefined) return this.previousSibling;
   else return this.closest(selector);
 };
 
-Element.prototype.val = function (setVal: string = "") {
+Element.prototype.val = function (setVal?: string) {
   if (
     !(
       this instanceof HTMLInputElement ||
@@ -81,13 +82,14 @@ Element.prototype.val = function (setVal: string = "") {
       }`
     );
 
-  if (setVal === "") return this.value;
+  if (setVal === undefined) return this.value;
   else this.value = setVal;
   return this;
 };
 
-NodeList.prototype.val = function (setVal: string = "") {
-  this.forEach((e: any) => e.val(setVal));
+NodeList.prototype.val = function (setVal?: string) {
+  if (setVal === undefined) this.forEach((e: any) => e.val());
+  else this.forEach((e: any) => e.val(setVal));
 };
 
 /**
@@ -154,10 +156,17 @@ Element.prototype.html = function (setHtml?) {
   return this;
 };
 
-NodeList.prototype.html = function (setHtml?) {
-  if (setHtml === undefined) this.forEach((e: any) => e.html());
-  else this.forEach((e: any) => e.html(setHtml));
-  return this;
+NodeList.prototype.html = function (setHtml?): NodeList | string {
+  if (setHtml === undefined) {
+    let myInnerHTML = "";
+    this.forEach((e: any) => {
+      myInnerHTML = e.innerHTML;
+    });
+    return myInnerHTML;
+  } else {
+    this.forEach((e: any) => e.html(setHtml));
+    return this;
+  }
 };
 
 /**
@@ -194,6 +203,7 @@ Element.prototype.removeAttr = function (attr: string) {
 
 NodeList.prototype.attr = function (attr: string) {
   this.forEach((e: any) => e.removeAttribute(attr));
+  return this;
 };
 
 Element.prototype.css = function (css = "", value?) {
@@ -211,10 +221,34 @@ Element.prototype.css = function (css = "", value?) {
 NodeList.prototype.css = function (css = "", value?) {
   if (!value) this.forEach((e: any) => e.css(css));
   else this.forEach((e: any) => e.css(css, value));
+  return this;
 };
 
 Element.prototype.forEach = function (myFunction: Function) {
   myFunction(this as Element);
+  return this;
+};
+
+/**
+ *  @param event is a string event name, e.g. change, click ,mouseover
+ *  @param callback is an inline function like function(){ alert("hello") } or inside a class : this.method without parantheses
+ */
+
+Element.prototype.on = function (event: string, callback: Function) {
+  this.addEventListener(event, function (this: Element) {
+    callback(this);
+  });
+  return this;
+};
+
+/**
+ *  @param event is a string event name, e.g. change, click ,mouseover
+ *  @param callback is an inline function like function(){ alert("hello") } or inside a class : this.method without parantheses
+ */
+
+NodeList.prototype.on = function (event: string, callback: Function) {
+  this.forEach((e: any) => e.on(event, callback));
+  return this;
 };
 
 /**
