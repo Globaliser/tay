@@ -25,8 +25,20 @@ NodeList.prototype.toggleClass = function (className) {
 };
 Element.prototype.find = function (selector) {
   let elements = this.querySelectorAll(selector);
-  if (elements.length === 1) return this.querySelector(selector);
+  if (elements.length === 1) return elements[0];
   else return elements;
+};
+NodeList.prototype.find = function (selector) {
+  let uniqueId = Math.floor(Date.now() / 1000);
+  this.forEach((e) => {
+    let newElements = e.find(selector);
+    if (newElements.childNodes.length > 0)
+      newElements.forEach((el) => el.attr("tayNodeList", uniqueId));
+    else newElements.attr("tayNodeList_" + uniqueId, uniqueId);
+  });
+  let myNodeList = document.querySelectorAll(`[tayNodeList_${uniqueId}]`);
+  myNodeList.removeAttr("tayNodeList_" + uniqueId);
+  return myNodeList;
 };
 Element.prototype.next = function () {
   return this.nextSibling;
@@ -126,7 +138,7 @@ Element.prototype.removeAttr = function (attr) {
   this.removeAttribute(attr);
   return this;
 };
-NodeList.prototype.attr = function (attr) {
+NodeList.prototype.removeAttr = function (attr) {
   this.forEach((e) => e.removeAttribute(attr));
   return this;
 };

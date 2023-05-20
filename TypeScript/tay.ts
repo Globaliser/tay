@@ -54,8 +54,24 @@ NodeList.prototype.toggleClass = function (className: string) {
 
 Element.prototype.find = function (selector: string) {
   let elements = this.querySelectorAll(selector);
-  if (elements.length === 1) return this.querySelector(selector);
+  if (elements.length === 1) return elements[0] as Element;
   else return elements;
+};
+
+NodeList.prototype.find = function (selector: string) {
+  let uniqueId = Math.floor(Date.now() / 1000);
+
+  this.forEach((e: any) => {
+    let newElements = e.find(selector);
+    if (newElements.childNodes.length > 0)
+      newElements.forEach((el: any) => el.attr("tayNodeList", uniqueId));
+    else newElements.attr("tayNodeList_" + uniqueId, uniqueId);
+  });
+
+  let myNodeList = document.querySelectorAll(`[tayNodeList_${uniqueId}]`);
+  myNodeList.removeAttr("tayNodeList_" + uniqueId);
+
+  return myNodeList;
 };
 
 Element.prototype.next = function () {
@@ -201,7 +217,7 @@ Element.prototype.removeAttr = function (attr: string) {
   return this;
 };
 
-NodeList.prototype.attr = function (attr: string) {
+NodeList.prototype.removeAttr = function (attr: string) {
   this.forEach((e: any) => e.removeAttribute(attr));
   return this;
 };
