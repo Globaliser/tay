@@ -1,5 +1,5 @@
 # tay
-Super slim javascript library which includes most used jQuery methods written on Typescript
+Super slim & fast javascript library which includes most used jQuery methods written on Typescript
 
 Currently minified, gzipped version is under **1KB**.
 
