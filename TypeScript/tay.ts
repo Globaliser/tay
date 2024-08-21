@@ -1,38 +1,45 @@
-interface Element {
+interface HTMLElement {
   trigger(action: string): any;
-  addClass(className: string): Element;
-  removeClass(className: string): Element;
-  toggleClass(className: string): Element;
-  find(selector: string): Element | NodeList | HTMLElement | null;
+  addClass(className: string): HTMLElement;
+  removeClass(className: string): HTMLElement;
+  toggleClass(className: string): HTMLElement;
+  find(selector: string): NodeList | HTMLElement | null;
   next(): any | null;
   prev(selector?: string): any | null;
   val(setVal?: string): any;
-  html(setHtml?: string): Element | string;
-  hide(byDisplayNone?: boolean): Element | any;
-  show(byDisplayNone?: boolean): Element | any;
+  html(setHtml?: string): HTMLElement | string;
+  hide(byDisplayNone?: boolean): HTMLElement | any;
+  show(byDisplayNone?: boolean): HTMLElement | any;
   parent(): HTMLElement;
   hasClass(...arg: string[]): boolean;
   attr(attr: string, value?: string): any;
+  d(data?: string, value?: string): any;
   removeAttr(attr: string): any;
   forEach(callback: Function): any;
   css(css: string, value?: string): HTMLElement | any;
   on(action: string, callback: Function): any;
+  length: number;
 }
 
-interface NodeList extends Element {}
-interface HTMLElement extends Element {}
+interface NodeList extends HTMLElement {}
 
-Element.prototype.trigger = function (action: string) {
+interface Document {
+  on(action: string, callback: Function): any;
+}
+
+HTMLElement.prototype.length = 1;
+
+HTMLElement.prototype.trigger = function (action: string) {
   this.dispatchEvent(new Event(action));
   return this;
 };
 
-Element.prototype.addClass = function (className: string) {
+HTMLElement.prototype.addClass = function (className: string) {
   this.classList.add(className);
   return this;
 };
 
-Element.prototype.removeClass = function (className: string) {
+HTMLElement.prototype.removeClass = function (className: string) {
   if (this.classList.contains(className)) this.classList.remove(className);
   return this;
 };
@@ -42,7 +49,7 @@ NodeList.prototype.removeClass = function (className: string) {
   return this;
 };
 
-Element.prototype.toggleClass = function (className: string) {
+HTMLElement.prototype.toggleClass = function (className: string) {
   this.classList.toggle(className);
   return this;
 };
@@ -52,9 +59,9 @@ NodeList.prototype.toggleClass = function (className: string) {
   return this;
 };
 
-Element.prototype.find = function (selector: string) {
+HTMLElement.prototype.find = function (selector: string) {
   let elements = this.querySelectorAll(selector);
-  if (elements.length === 1) return elements[0] as Element;
+  if (elements.length === 1) return elements[0] as HTMLElement;
   else return elements;
 };
 
@@ -63,8 +70,10 @@ NodeList.prototype.find = function (selector: string) {
 
   this.forEach((e: any) => {
     let newElements = e.find(selector);
-    if (newElements.childNodes.length > 0)
-      newElements.forEach((el: any) => el.attr("tayNodeList", uniqueId));
+    if (newElements.childNodes)
+      newElements.forEach((el: any) =>
+        el.attr("tayNodeList_" + uniqueId, uniqueId)
+      );
     else newElements.attr("tayNodeList_" + uniqueId, uniqueId);
   });
 
@@ -74,16 +83,16 @@ NodeList.prototype.find = function (selector: string) {
   return myNodeList;
 };
 
-Element.prototype.next = function () {
+HTMLElement.prototype.next = function () {
   return this.nextSibling;
 };
 
-Element.prototype.prev = function (selector?) {
+HTMLElement.prototype.prev = function (selector?) {
   if (selector === undefined) return this.previousSibling;
   else return this.closest(selector);
 };
 
-Element.prototype.val = function (setVal?: string) {
+HTMLElement.prototype.val = function (setVal?: string) {
   if (
     !(
       this instanceof HTMLInputElement ||
@@ -93,7 +102,7 @@ Element.prototype.val = function (setVal?: string) {
     )
   )
     throw new Error(
-      `Expected e to be an HTMLInputElement, HTMLSelectElement, HTMLLIElement or HTMLOptionElement, but was ${
+      `Expected e to be an HTMLInputElement, HTMLSelectElement, HTMLLIElement or HTMLOptionElement, but was t{
         (this && this.constructor && this.constructor.name) || this
       }`
     );
@@ -111,13 +120,13 @@ NodeList.prototype.val = function (setVal?: string) {
 /**
  *  Adds .hide class to element or display:none if byDisplayNone is true
  * @param byDisplayNone
- * @returns {Element}
+ * @returns {HTMLElement}
  */
 
-Element.prototype.hide = function (byDisplayNone = false) {
+HTMLElement.prototype.hide = function (byDisplayNone = false) {
   if (!(this instanceof HTMLElement))
     throw new Error(
-      `Expected e to be an HTMLElement, but was ${
+      `Expected e to be an HTMLElement, but was t{
         (this && this.constructor && this.constructor.name) || this
       }`
     );
@@ -140,13 +149,13 @@ NodeList.prototype.hide = function (byDisplayNone = false) {
 /**
  *  Remove .hide class from element or set display:block if byDisplayNone is true
  * @param byDisplayNone
- * @returns {Element}
+ * @returns {HTMLElement}
  */
 
-Element.prototype.show = function (byDisplayNone = false) {
+HTMLElement.prototype.show = function (byDisplayNone = false) {
   if (!(this instanceof HTMLElement))
     throw new Error(
-      `Expected e to be an HTMLElement, but was ${
+      `Expected e to be an HTMLElement, but was t{
         (this && this.constructor && this.constructor.name) || this
       }`
     );
@@ -166,7 +175,7 @@ NodeList.prototype.show = function (byDisplayNone = false) {
   return this;
 };
 
-Element.prototype.html = function (setHtml?) {
+HTMLElement.prototype.html = function (setHtml?) {
   if (setHtml === undefined) return this.innerHTML;
   else this.innerHTML = setHtml;
   return this;
@@ -190,17 +199,17 @@ NodeList.prototype.html = function (setHtml?): NodeList | string {
  * @param classNames Multiple ClassNames separate as "classA", "classB"
  * @returns Boolean
  */
-Element.prototype.hasClass = function (...classNames) {
+HTMLElement.prototype.hasClass = function (...classNames) {
   let me = this;
   return [...classNames].every((c) => me.classList.contains(c));
 };
 
-Element.prototype.parent = function () {
+HTMLElement.prototype.parent = function () {
   if (this.parentElement !== null) return this.parentElement as HTMLElement;
   else throw new Error(" [TAY] Parent element is null");
 };
 
-Element.prototype.attr = function (attr: string, value?) {
+HTMLElement.prototype.attr = function (attr: string, value?) {
   if (!value) return this.getAttribute(attr);
   else this.setAttribute(attr, value);
   return this;
@@ -212,7 +221,30 @@ NodeList.prototype.attr = function (attr: string, value?) {
   return this;
 };
 
-Element.prototype.removeAttr = function (attr: string) {
+HTMLElement.prototype.d = function (data?: string, value?) {
+  if (!data && !value) return this.dataset;
+  else if (!value) return this.getAttribute("data-" + data);
+  else {
+    this.setAttribute("data-" + data, value);
+    return this;
+  }
+};
+NodeList.prototype.d = function (data?: string, value?) {
+  if (!data && !value) {
+    let dataArray: Array<string> = [];
+    this.forEach((e: any) => dataArray.push(e.d()));
+    return dataArray;
+  } else if (!value) {
+    let dataArray: Array<string> = [];
+    this.forEach((e: any) => dataArray.push(e.d(data)));
+    return dataArray;
+  } else {
+    this.forEach((e: any) => e.d(data, value));
+    return this;
+  }
+};
+
+HTMLElement.prototype.removeAttr = function (attr: string) {
   this.removeAttribute(attr);
   return this;
 };
@@ -222,10 +254,10 @@ NodeList.prototype.removeAttr = function (attr: string) {
   return this;
 };
 
-Element.prototype.css = function (css = "", value?) {
+HTMLElement.prototype.css = function (css = "", value?) {
   if (!(this instanceof HTMLElement))
     throw new Error(
-      `Expected e to be an HTMLElement, but was ${
+      `Expected e to be an HTMLElement, but was t{
         (this && this.constructor && this.constructor.name) || this
       }`
     );
@@ -240,8 +272,8 @@ NodeList.prototype.css = function (css = "", value?) {
   return this;
 };
 
-Element.prototype.forEach = function (myFunction: Function) {
-  myFunction(this as Element);
+HTMLElement.prototype.forEach = function (myFunction: Function) {
+  myFunction(this as HTMLElement);
   return this;
 };
 
@@ -250,9 +282,21 @@ Element.prototype.forEach = function (myFunction: Function) {
  *  @param callback is an inline function like function(){ alert("hello") } or inside a class : this.method without parantheses
  */
 
-Element.prototype.on = function (event: string, callback: Function) {
-  this.addEventListener(event, function (this: Element) {
-    callback(this);
+HTMLElement.prototype.on = function (event: string, callback: Function) {
+  this.addEventListener(event, function (event) {
+    callback(event);
+  });
+  return this;
+};
+
+/**
+ *  @param event is a string event name, e.g. change, click ,mouseover
+ *  @param callback is an inline function like function(){ alert("hello") } or inside a class : this.method without parantheses
+ */
+
+Document.prototype.on = function (event: string, callback: Function) {
+  document.addEventListener(event, function (event) {
+    callback(event);
   });
   return this;
 };
@@ -272,8 +316,8 @@ NodeList.prototype.on = function (event: string, callback: Function) {
  * @param selector Accepts multiple selector separated by , (comma)
  * @returns
  */
-function tay(selector: string) {
+function t(selector: string) {
   let elements = document.querySelectorAll(selector);
-  if (elements.length === 1) return elements[0] as Element;
+  if (elements.length === 1) return elements[0] as HTMLElement;
   return elements;
 }
