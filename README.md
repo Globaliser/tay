@@ -1,3 +1,5 @@
+https://www.globaliser.com/tay/
+
 # tay
 Super slim & fast javascript library which includes most used jQuery methods written on Typescript
 
@@ -21,4 +23,4 @@ tay(".myclass").addClass("example");
 
 myElement.parent().find(".switch").toggleClass("example");
 
-https://www.globaliser.com/tay/
+
