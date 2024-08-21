@@ -1,179 +1,181 @@
 "use strict";
-Element.prototype.trigger = function (action) {
-  this.dispatchEvent(new Event(action));
-  return this;
-};
-Element.prototype.addClass = function (className) {
-  this.classList.add(className);
-  return this;
-};
-Element.prototype.removeClass = function (className) {
-  if (this.classList.contains(className)) this.classList.remove(className);
-  return this;
-};
-NodeList.prototype.removeClass = function (className) {
-  this.forEach((e) => e.removeClass(className));
-  return this;
-};
-Element.prototype.toggleClass = function (className) {
-  this.classList.toggle(className);
-  return this;
-};
-NodeList.prototype.toggleClass = function (className) {
-  this.forEach((e) => e.toggleClass(className));
-  return this;
-};
-Element.prototype.find = function (selector) {
-  let elements = this.querySelectorAll(selector);
-  if (elements.length === 1) return elements[0];
-  else return elements;
-};
-NodeList.prototype.find = function (selector) {
-  let uniqueId = Math.floor(Date.now() / 1000);
-  this.forEach((e) => {
-    let newElements = e.find(selector);
-    if (newElements.childNodes.length > 0)
-      newElements.forEach((el) => el.attr("tayNodeList", uniqueId));
-    else newElements.attr("tayNodeList_" + uniqueId, uniqueId);
-  });
-  let myNodeList = document.querySelectorAll(`[tayNodeList_${uniqueId}]`);
-  myNodeList.removeAttr("tayNodeList_" + uniqueId);
-  return myNodeList;
-};
-Element.prototype.next = function () {
-  return this.nextSibling;
-};
-Element.prototype.prev = function (selector) {
-  if (selector === undefined) return this.previousSibling;
-  else return this.closest(selector);
-};
-Element.prototype.val = function (setVal) {
-  if (
-    !(
+function t(t) {
+  return 1 === (t = document.querySelectorAll(t)).length ? t[0] : t;
+}
+(HTMLElement.prototype.length = 1),
+  (HTMLElement.prototype.trigger = function (t) {
+    return this.dispatchEvent(new Event(t)), this;
+  }),
+  (HTMLElement.prototype.addClass = function (t) {
+    return this.classList.add(t), this;
+  }),
+  (HTMLElement.prototype.removeClass = function (t) {
+    return this.classList.contains(t) && this.classList.remove(t), this;
+  }),
+  (NodeList.prototype.removeClass = function (n) {
+    return this.forEach((t) => t.removeClass(n)), this;
+  }),
+  (HTMLElement.prototype.toggleClass = function (t) {
+    return this.classList.toggle(t), this;
+  }),
+  (NodeList.prototype.toggleClass = function (n) {
+    return this.forEach((t) => t.toggleClass(n)), this;
+  }),
+  (HTMLElement.prototype.find = function (t) {
+    return 1 === (t = this.querySelectorAll(t)).length ? t[0] : t;
+  }),
+  (NodeList.prototype.find = function (e) {
+    let i = Math.floor(Date.now() / 1e3),
+      t =
+        (this.forEach((t) => {
+          let n = t.find(e);
+          n.childNodes
+            ? n.forEach((t) => t.attr("tayNodeList_" + i, i))
+            : n.attr("tayNodeList_" + i, i);
+        }),
+        document.querySelectorAll(`[tayNodeList_${i}]`));
+    return t.removeAttr("tayNodeList_" + i), t;
+  }),
+  (HTMLElement.prototype.next = function () {
+    return this.nextSibling;
+  }),
+  (HTMLElement.prototype.prev = function (t) {
+    return void 0 === t ? this.previousSibling : this.closest(t);
+  }),
+  (HTMLElement.prototype.val = function (t) {
+    if (
       this instanceof HTMLInputElement ||
       this instanceof HTMLSelectElement ||
       this instanceof HTMLLIElement ||
       this instanceof HTMLOptionElement
     )
-  )
-    throw new Error(
-      `Expected e to be an HTMLInputElement, HTMLSelectElement, HTMLLIElement or HTMLOptionElement, but was ${
+      return void 0 === t ? this.value : ((this.value = t), this);
+    throw new Error(`Expected e to be an HTMLInputElement, HTMLSelectElement, HTMLLIElement or HTMLOptionElement, but was t{
         (this && this.constructor && this.constructor.name) || this
-      }`
-    );
-  if (setVal === undefined) return this.value;
-  else this.value = setVal;
-  return this;
-};
-NodeList.prototype.val = function (setVal) {
-  if (setVal === undefined) this.forEach((e) => e.val());
-  else this.forEach((e) => e.val(setVal));
-};
-Element.prototype.hide = function (byDisplayNone = false) {
-  if (!(this instanceof HTMLElement))
-    throw new Error(
-      `Expected e to be an HTMLElement, but was ${
+      }`);
+  }),
+  (NodeList.prototype.val = function (n) {
+    void 0 === n ? this.forEach((t) => t.val()) : this.forEach((t) => t.val(n));
+  }),
+  (HTMLElement.prototype.hide = function (t = !1) {
+    if (this instanceof HTMLElement)
+      return (
+        !0 === t ? (this.style.display = "none") : this.classList.add("hide"),
+        this
+      );
+    throw new Error(`Expected e to be an HTMLElement, but was t{
         (this && this.constructor && this.constructor.name) || this
-      }`
-    );
-  if (byDisplayNone === true) this.style.display = "none";
-  else this.classList.add("hide");
-  return this;
-};
-NodeList.prototype.hide = function (byDisplayNone = false) {
-  this.forEach((e) => e.hide(byDisplayNone));
-  return this;
-};
-Element.prototype.show = function (byDisplayNone = false) {
-  if (!(this instanceof HTMLElement))
-    throw new Error(
-      `Expected e to be an HTMLElement, but was ${
+      }`);
+  }),
+  (NodeList.prototype.hide = function (n = !1) {
+    return this.forEach((t) => t.hide(n)), this;
+  }),
+  (HTMLElement.prototype.show = function (t = !1) {
+    if (this instanceof HTMLElement)
+      return (
+        !0 === t
+          ? (this.style.display = "block")
+          : this.classList.remove("hide"),
+        this
+      );
+    throw new Error(`Expected e to be an HTMLElement, but was t{
         (this && this.constructor && this.constructor.name) || this
-      }`
+      }`);
+  }),
+  (NodeList.prototype.show = function (n = !1) {
+    return this.forEach((t) => t.show(n)), this;
+  }),
+  (HTMLElement.prototype.html = function (t) {
+    return void 0 === t ? this.innerHTML : ((this.innerHTML = t), this);
+  }),
+  (NodeList.prototype.html = function (n) {
+    if (void 0 !== n) return this.forEach((t) => t.html(n)), this;
+    {
+      let n = "";
+      return (
+        this.forEach((t) => {
+          n = t.innerHTML;
+        }),
+        n
+      );
+    }
+  }),
+  (HTMLElement.prototype.hasClass = function (...t) {
+    let n = this;
+    return [...t].every((t) => n.classList.contains(t));
+  }),
+  (HTMLElement.prototype.parent = function () {
+    if (null !== this.parentElement) return this.parentElement;
+    throw new Error(" [TAY] Parent element is null");
+  }),
+  (HTMLElement.prototype.attr = function (t, n) {
+    return n ? (this.setAttribute(t, n), this) : this.getAttribute(t);
+  }),
+  (NodeList.prototype.attr = function (n, e) {
+    return (
+      e ? this.forEach((t) => t.attr(n, e)) : this.forEach((t) => t.attr(n)),
+      this
     );
-  if (byDisplayNone === true) this.style.display = "block";
-  else this.classList.remove("hide");
-  return this;
-};
-NodeList.prototype.show = function (byDisplayNone = false) {
-  this.forEach((e) => e.show(byDisplayNone));
-  return this;
-};
-Element.prototype.html = function (setHtml) {
-  if (setHtml === undefined) return this.innerHTML;
-  else this.innerHTML = setHtml;
-  return this;
-};
-NodeList.prototype.html = function (setHtml) {
-  if (setHtml === undefined) {
-    let myInnerHTML = "";
-    this.forEach((e) => {
-      myInnerHTML = e.innerHTML;
-    });
-    return myInnerHTML;
-  } else {
-    this.forEach((e) => e.html(setHtml));
-    return this;
-  }
-};
-Element.prototype.hasClass = function (...classNames) {
-  let me = this;
-  return [...classNames].every((c) => me.classList.contains(c));
-};
-Element.prototype.parent = function () {
-  if (this.parentElement !== null) return this.parentElement;
-  else throw new Error(" [TAY] Parent element is null");
-};
-Element.prototype.attr = function (attr, value) {
-  if (!value) return this.getAttribute(attr);
-  else this.setAttribute(attr, value);
-  return this;
-};
-NodeList.prototype.attr = function (attr, value) {
-  if (!value) this.forEach((e) => e.attr(attr));
-  else this.forEach((e) => e.attr(attr, value));
-  return this;
-};
-Element.prototype.removeAttr = function (attr) {
-  this.removeAttribute(attr);
-  return this;
-};
-NodeList.prototype.removeAttr = function (attr) {
-  this.forEach((e) => e.removeAttribute(attr));
-  return this;
-};
-Element.prototype.css = function (css = "", value) {
-  if (!(this instanceof HTMLElement))
-    throw new Error(
-      `Expected e to be an HTMLElement, but was ${
+  }),
+  (HTMLElement.prototype.d = function (t, n) {
+    return t || n
+      ? n
+        ? (this.setAttribute("data-" + t, n), this)
+        : this.getAttribute("data-" + t)
+      : this.dataset;
+  }),
+  (NodeList.prototype.d = function (e, n) {
+    if (e || n) {
+      if (n) return this.forEach((t) => t.d(e, n)), this;
+      {
+        let n = [];
+        return this.forEach((t) => n.push(t.d(e))), n;
+      }
+    }
+    {
+      let n = [];
+      return this.forEach((t) => n.push(t.d())), n;
+    }
+  }),
+  (HTMLElement.prototype.removeAttr = function (t) {
+    return this.removeAttribute(t), this;
+  }),
+  (NodeList.prototype.removeAttr = function (n) {
+    return this.forEach((t) => t.removeAttribute(n)), this;
+  }),
+  (HTMLElement.prototype.css = function (t = "", n) {
+    if (this instanceof HTMLElement)
+      return n
+        ? (this.style.setProperty(t, n), this)
+        : window.getComputedStyle(this).getPropertyValue(t);
+    throw new Error(`Expected e to be an HTMLElement, but was t{
         (this && this.constructor && this.constructor.name) || this
-      }`
+      }`);
+  }),
+  (NodeList.prototype.css = function (n = "", e) {
+    return (
+      e ? this.forEach((t) => t.css(n, e)) : this.forEach((t) => t.css(n)), this
     );
-  if (!value) return window.getComputedStyle(this).getPropertyValue(css);
-  else this.style.setProperty(css, value);
-  return this;
-};
-NodeList.prototype.css = function (css = "", value) {
-  if (!value) this.forEach((e) => e.css(css));
-  else this.forEach((e) => e.css(css, value));
-  return this;
-};
-Element.prototype.forEach = function (myFunction) {
-  myFunction(this);
-  return this;
-};
-Element.prototype.on = function (event, callback) {
-  this.addEventListener(event, function () {
-    callback(this);
+  }),
+  (HTMLElement.prototype.forEach = function (t) {
+    return t(this), this;
+  }),
+  (HTMLElement.prototype.on = function (t, n) {
+    return (
+      this.addEventListener(t, function (t) {
+        n(t);
+      }),
+      this
+    );
+  }),
+  (Document.prototype.on = function (t, n) {
+    return (
+      document.addEventListener(t, function (t) {
+        n(t);
+      }),
+      this
+    );
+  }),
+  (NodeList.prototype.on = function (n, e) {
+    return this.forEach((t) => t.on(n, e)), this;
   });
-  return this;
-};
-NodeList.prototype.on = function (event, callback) {
-  this.forEach((e) => e.on(event, callback));
-  return this;
-};
-function tay(selector) {
-  let elements = document.querySelectorAll(selector);
-  if (elements.length === 1) return elements[0];
-  return elements;
-}
