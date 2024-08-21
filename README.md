@@ -21,4 +21,4 @@ tay(".myclass").addClass("example");
 
 myElement.parent().find(".switch").toggleClass("example");
 
-
+https://www.globaliser.com/tay/
