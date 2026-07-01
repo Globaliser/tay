@@ -2,11 +2,11 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES6",
-    "outDir": "/example_local_path_before_public_html_folder/public_html/js/",
+    "outDir": "./JavaScript/",
     "lib": ["es6", "DOM", "ES2022"],
     "sourceMap": false,
     "removeComments": true,
-    "rootDir": "/example_local_path_before_public_html_folder/ts/",
+    "rootDir": "./TypeScript/",
     /* Strict Type-Checking Option */
     "strict": true /* enable all strict type-checking options */,
     "strictNullChecks": true,
